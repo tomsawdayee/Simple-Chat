@@ -32,3 +32,11 @@ textarea {
         z-index: 10 !important;
     }
 }
+
+.height-200 {
+    height: 200px;
+    overflow-y: scroll;
+}
+.margin-top-10 {
+    margin-top:10px;
+}

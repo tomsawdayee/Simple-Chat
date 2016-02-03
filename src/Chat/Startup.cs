@@ -1,11 +1,9 @@
 ﻿using System;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
-using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Chat.Models;
 using Autofac;
 using Chat.Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -43,6 +41,7 @@ namespace Chat
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
+            services.AddSignalR();
 
             services.AddMvc();
 
@@ -67,6 +66,8 @@ namespace Chat
             loggerFactory.AddDebug();
 
             app.UseApplicationInsightsRequestTelemetry();
+
+            app.UseSignalR();
 
             if (env.IsDevelopment())
             {
@@ -111,3 +112,4 @@ namespace Chat
         public static void Main(string[] args) => WebApplication.Run<Startup>(args);
     }
 }
+

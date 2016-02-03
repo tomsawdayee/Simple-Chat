@@ -10,11 +10,6 @@ namespace Chat.Controllers
 {
     public class HomeController : Controller
     {
-        public IDocumentSession _documentSession { get; set; }
-        public HomeController(IDocumentSession documentSession)
-        {
-            _documentSession = documentSession;
-        }
         public IActionResult Index()
         {
             return View();
