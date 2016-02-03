@@ -1,5 +1,10 @@
 # Chat
+
+Tom's chat
+
 A Simple chat application
+
+No database - just pure SignalR broadcasts
 
 Technologies:
 
