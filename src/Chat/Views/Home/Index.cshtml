@@ -6,15 +6,21 @@
 <div id="chat-hub">
     <div class="row margin-top-10">
         <input type="text" class="form-control" data-bind="value: username" placeholder="Username" />
+        <button data class="btn btn-primary margin-top-10">Submit</button>
     </div>
     <div class="row">
-        <div data-bind="visible: isLoading()">
-            <img src="~/images/loading.gif" /> Loading...
-        </div>
-        <div data-bind="foreach: messages" class="height-200">
-            <div>
-                <span data-bind="text: FromUser"></span> : <span data-bind="text: Text"></span>
+        <div class="col-md-6">
+            <div data-bind="visible: isLoading()">
+                <img src="~/images/loading.gif" /> Loading...
             </div>
+            <div data-bind="foreach: messages" class="height-200">
+                <div>
+                    <span data-bind="text: FromUser"></span> : <span data-bind="text: Text"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div data-bind="foreach: users"><div data-bind="text: Item2"></div></div>
         </div>
     </div>
     <div class="row" data-bind="visible: !isLoading()">

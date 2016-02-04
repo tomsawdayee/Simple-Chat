@@ -1,5 +1,6 @@
 ﻿var viewModel = {
-    username: ko.observable("New user"),
+    username: ko.observable(null),
+    users: ko.observableArray([]),
     messages: ko.observableArray([]),
     message: ko.observable(null),
     isLoading: ko.observable(false),
@@ -11,7 +12,6 @@
     sendMessage: function () {
         var message = viewModel.message();
         var username = viewModel.username();
-
         $.ajax({
             url: "/api/messages/sendMessage",
             type: "POST",
@@ -21,18 +21,26 @@
         return false;
     },
 
-    init: function () {
+    selectUsername: function () {
+        
+    },
+
+    connect: function () {
         viewModel.isLoading(true);
-        $.connection.hub.logging = true;
         var messagesHub = $.connection.messages;
         messagesHub.client.receiveMessage = function (message) {
             viewModel.addMessage(message);
         };
+        messagesHub.client.updateUsers = function (list) {
+            viewModel.users(list);
+        };
+        $.connection.hub.qs = "name=" + viewModel.username();
         $.connection.hub.start().done(function () {
             viewModel.isLoading(false);
         });
     }
 };
+
 viewModel.init();
 ko.applyBindings(viewModel, $("#chat-hub")[0]);
 

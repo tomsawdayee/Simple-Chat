@@ -20,7 +20,7 @@ namespace Chat.Controllers.Api
         }
 
         [HttpPost]
-        public Message SendMessage(string username, string text)
+        public Message SendMessage(string username, string text, string toUser = null)
         {
             var message = new Message
             {
