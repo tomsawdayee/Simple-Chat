@@ -81,7 +81,8 @@
     },
 
     selectUsername: function () {
-        viewModel.connect();
+        if (viewModel.username() != null)
+            viewModel.connect();
     },
 
     connect: function () {
