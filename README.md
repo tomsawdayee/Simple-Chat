@@ -2,6 +2,8 @@
 
 A Simple chat application
 
+Allows public & private messaging
+
 No database - just pure SignalR broadcasts
 
 Technologies:
