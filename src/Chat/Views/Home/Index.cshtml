@@ -4,11 +4,11 @@
 
 
 <div id="chat-hub">
-    <div class="row margin-top-10">
+    <div class="row margin-top-10" data-bind="visible: !hasUsername()">
         <input type="text" class="form-control" data-bind="value: username" placeholder="Username" />
-        <button data class="btn btn-primary margin-top-10">Submit</button>
+        <button data-bind="click: selectUsername" class="btn btn-primary margin-top-10">Submit</button>
     </div>
-    <div class="row">
+    <div class="row margin-top-40" data-bind="visible: hasUsername()">
         <div class="col-md-6">
             <div data-bind="visible: isLoading()">
                 <img src="~/images/loading.gif" /> Loading...
@@ -23,7 +23,7 @@
             <div data-bind="foreach: users"><div data-bind="text: Item2"></div></div>
         </div>
     </div>
-    <div class="row" data-bind="visible: !isLoading()">
+    <div class="row" data-bind="visible: hasUsername() && !isLoading()">
         <form data-bind="submit: sendMessage">
             <input type="text" class="form-control" placeholder="Message" data-bind="value: message" />
             <button type="submit" class="btn btn-primary margin-top-10">Submit</button>

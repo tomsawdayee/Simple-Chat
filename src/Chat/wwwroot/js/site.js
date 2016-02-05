@@ -4,6 +4,7 @@
     messages: ko.observableArray([]),
     message: ko.observable(null),
     isLoading: ko.observable(false),
+    hasUsername: ko.observable(false),
 
     addMessage: function (message) {
         viewModel.messages.push(message);
@@ -22,7 +23,8 @@
     },
 
     selectUsername: function () {
-        
+        viewModel.hasUsername(true);
+        viewModel.connect();
     },
 
     connect: function () {
@@ -41,7 +43,6 @@
     }
 };
 
-viewModel.init();
 ko.applyBindings(viewModel, $("#chat-hub")[0]);
 
 
