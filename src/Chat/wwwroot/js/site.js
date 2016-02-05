@@ -5,7 +5,7 @@
     message: ko.observable(null),
     privateMessages: ko.observableArray([]),
     isLoading: ko.observable(false),
-    hasUsername: ko.observable(false),
+    isConnected: ko.observable(false),
     hub: {},
 
     addPublicMessage: function (message) {
@@ -81,7 +81,6 @@
     },
 
     selectUsername: function () {
-        viewModel.hasUsername(true);
         viewModel.connect();
     },
 
@@ -101,6 +100,7 @@
         $.connection.hub.qs = "name=" + viewModel.username();
         $.connection.hub.start().done(function () {
             viewModel.isLoading(false);
+            viewModel.isConnected(true);
         });
     }
 };

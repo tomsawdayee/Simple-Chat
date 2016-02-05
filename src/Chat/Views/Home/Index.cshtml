@@ -4,39 +4,99 @@
 
 
 <div id="chat-hub">
-    <div class="row margin-top-10" data-bind="visible: !hasUsername()">
-        <input type="text" class="form-control" data-bind="value: username" placeholder="Username" />
-        <button data-bind="click: selectUsername" class="btn btn-primary margin-top-10">Submit</button>
-    </div>
-    <div class="row margin-top-10" data-bind="visible: hasUsername()">
-        <h3>Hello, <span data-bind="text: username()"></span></h3>
-    </div>
-    <div class="row margin-top-40" data-bind="visible: hasUsername()">
-        <div class="col-md-6">
-            <div data-bind="visible: isLoading()">
-                <img src="~/images/loading.gif" /> Loading...
+    <h3 class="text-center">
+        Welcome
+        <span data-bind="visible: !isConnected()">! Please connect</span>
+        <span data-bind="visible: isConnected(), text: username()"> </span>
+    </h3>
+    <div class="row margin-top-10" data-bind="visible: !isConnected()">
+        <form data-bind="submit: selectUsername" class="col-md-12 form-inline text-center">
+            <div class="input-group">
+                <input type="text" class="form-control" data-bind="value: username" placeholder="Enter Username" />
+                <span class="input-group-btn">
+                    <button class="btn btn-info" type="submit">SUBMIT</button>
+                </span>
             </div>
-            <div data-bind="foreach: messages" class="height-200">
-                <div>
-                    <span data-bind="text: FromUser"></span> : <span data-bind="text: Text"></span>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div data-bind="foreach: users"><div><a href="#" data-bind="text: Item2, click: $parent.openChatWindow"></a></div></div>
-        </div>
-    </div>
-    <div class="row" data-bind="visible: hasUsername() && !isLoading()">
-        <form data-bind="submit: sendMessage">
-            <input type="text" class="form-control" placeholder="Message" data-bind="value: message" />
-            <button type="submit" class="btn btn-primary margin-top-10">Submit</button>
         </form>
     </div>
 
+    <div class="row " style="padding-top:40px;">
+
+        <br /><br />
+        <div class="col-md-8">
+            <div class="panel panel-info">
+
+                <div class="panel-heading">
+                    RECENT CHAT HISTORY
+                </div>
+                <div data-bind="visible: isLoading()">
+                    <img src="~/images/loading.gif" /> Connecting...
+                </div>
+                <div class="panel-body chat-body">
+                    <ul class="media-list" data-bind="foreach: messages">
+                        <li class="media">
+                            <div class="media-body">
+                                <div class="media">
+                                    <a class="pull-left" href="#">
+                                        <img class="media-object img-circle " src="~/images/user.png" />
+                                    </a>
+                                    <div class="media-body">
+                                        <div data-bind="text: Text"></div>
+                                        <small class="text-muted" data-bind="text: FromUser"></small>
+                                        <hr />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-footer">
+                    <form data-bind="submit: sendMessage">
+                        <div class="input-group">
+                            <input type="text" class="form-control" data-bind="value: message, enable: isConnected()" placeholder="Enter Message" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-info" data-bind="enable: isConnected()" type="submit">SEND</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    ONLINE USERS
+                </div>
+                <div data-bind="visible: isLoading()">
+                    <img src="~/images/loading.gif" /> Connecting...
+                </div>
+                <div class="panel-body chat-body">
+                    <ul class="media-list" data-bind="foreach: users">
+                        <li class="media">
+                            <div class="media-body">
+                                <div class="media" data-bind="click: $parent.openChatWindow">
+                                    <a class="pull-left" href="#">
+                                        <img class="media-object img-circle" style="max-height:40px;" src="~/images/user.gif" />
+                                    </a>
+                                    <div class="media-body">
+                                        <h5 data-bind="text: Item2">Jhon Rexa</h5>
+                                        <small class="text-muted">Active From 3 hours</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-    <div class="row chat-window col-xs-5 col-md-3" data-bind="foreach: privateMessages" style="margin-left:10px;">
-        <div class="col-xs-12 col-md-12">
+
+
+    <div class="row chat-window col-md-12" data-bind="foreach: privateMessages" style="margin-left:10px;">
+        <div class="col-md-3 col-lg-2">
             <div class="panel panel-default">
                 <div class="panel-heading top-bar">
                     <div class="col-md-8 col-xs-8">
@@ -47,41 +107,26 @@
                     </div>
                 </div>
                 <div class="panel-body msg_container_base" data-bind="foreach: messages">
-                    <div class="row msg_container" data-bind="attr : { class : isSelf() ? 'row msg_container base_sent' : 'row msg_container base_receive' }" >
+                    <div class="row msg_container" data-bind="attr : { class : isSelf() ? 'row msg_container base_sent' : 'row msg_container base_receive' }">
                         <!-- ko if: !isSelf() -->
-                            <div class="col-md-2 col-xs-2 avatar">
-                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class="img-responsive">
-                            </div>
+                        <div class="col-md-2 col-xs-2 avatar">
+                            <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class="img-responsive">
+                        </div>
                         <!-- /ko -->
                         <div class="col-md-10 col-xs-10">
                             <div class="messages" data-bind="attr : { class : isSelf() ? 'messages msg_sent' : 'messages msg_receive' }">
                                 <p data-bind="text: text()">
-                                    
+
                                 </p>
                                 <time data-bind="text: from()"></time>
                             </div>
                         </div>
                         <!-- ko if: isSelf() -->
-                            <div class="col-md-2 col-xs-2 avatar">
-                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class="img-responsive">
-                            </div>
+                        <div class="col-md-2 col-xs-2 avatar">
+                            <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class="img-responsive">
+                        </div>
                         <!-- /ko -->
                     </div>
-                    @*<div class="row msg_container base_receive">
-                        <div class="col-md-2 col-xs-2 avatar">
-                            <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                        </div>
-                        <div class="col-md-10 col-xs-10">
-                            <div class="messages msg_receive">
-                                <p>
-                                    that mongodb thing looks good, huh?
-                                    tiny master db, and huge document store
-                                </p>
-                                <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
-                            </div>
-                        </div>
-                    </div>*@
-
                 </div>
                 <div class="panel-footer">
                     <div class="input-group">
