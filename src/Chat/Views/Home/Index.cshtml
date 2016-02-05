@@ -8,6 +8,9 @@
         <input type="text" class="form-control" data-bind="value: username" placeholder="Username" />
         <button data-bind="click: selectUsername" class="btn btn-primary margin-top-10">Submit</button>
     </div>
+    <div class="row margin-top-10" data-bind="visible: hasUsername()">
+        <h3>Hello, <span data-bind="text: username()"></span></h3>
+    </div>
     <div class="row margin-top-40" data-bind="visible: hasUsername()">
         <div class="col-md-6">
             <div data-bind="visible: isLoading()">
@@ -43,19 +46,26 @@
                         <a href="#" data-bind="click: $parent.closeChatWindow"><span class="glyphicon glyphicon-remove icon_close" data-id="chat_window_1"></span></a>
                     </div>
                 </div>
-                <div class="panel-body msg_container_base">
-                    <div class="row msg_container base_sent" data-bind="foreach: messages">
+                <div class="panel-body msg_container_base" data-bind="foreach: messages">
+                    <div class="row msg_container" data-bind="attr : { class : isSelf() ? 'row msg_container base_sent' : 'row msg_container base_receive' }" >
+                        <!-- ko if: !isSelf() -->
+                            <div class="col-md-2 col-xs-2 avatar">
+                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class="img-responsive">
+                            </div>
+                        <!-- /ko -->
                         <div class="col-md-10 col-xs-10">
-                            <div class="messages msg_sent">
-                                <p data-bind="$data">
+                            <div class="messages" data-bind="attr : { class : isSelf() ? 'messages msg_sent' : 'messages msg_receive' }">
+                                <p data-bind="text: text()">
                                     
                                 </p>
-                                <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                <time data-bind="text: from()"></time>
                             </div>
                         </div>
-                        <div class="col-md-2 col-xs-2 avatar">
-                            <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                        </div>
+                        <!-- ko if: isSelf() -->
+                            <div class="col-md-2 col-xs-2 avatar">
+                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class="img-responsive">
+                            </div>
+                        <!-- /ko -->
                     </div>
                     @*<div class="row msg_container base_receive">
                         <div class="col-md-2 col-xs-2 avatar">
