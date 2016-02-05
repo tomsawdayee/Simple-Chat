@@ -3,23 +3,77 @@
     users: ko.observableArray([]),
     messages: ko.observableArray([]),
     message: ko.observable(null),
+    privateMessages: ko.observableArray([]),
     isLoading: ko.observable(false),
     hasUsername: ko.observable(false),
+    hub: {},
 
-    addMessage: function (message) {
+    addPublicMessage: function (message) {
         viewModel.messages.push(message);
+    },
+    addPrivateMessage: function (message) {
+        var openItem = ko.utils.arrayFirst(viewModel.privateMessages(), function (item) {
+            if (message.fromUserConnectionId == item.fromUserConnectionId)
+                return true;
+            return false;
+        });
+
+        if (!openItem) {
+            viewModel.privateMessages.push(
+                { connectionId: message.fromUserConnectionId, username: message.fromUser, newMessage: ko.observable(""), messages: ko.observableArray([message.text])});
+        } else {
+            openItem.messages.push(message.text);   
+        }
+        viewModel.privateMessages.push(message);
     },
 
     sendMessage: function () {
         var message = viewModel.message();
         var username = viewModel.username();
-        $.ajax({
-            url: "/api/messages/sendMessage",
-            type: "POST",
-            data: { username: username, text: message }
-        });
+        
+        viewModel.hub.server.sendMessage(username, message, null);
+
         viewModel.message(null);
         return false;
+    },
+
+    sendPrivateMessage: function(){
+        var message = this;
+
+        var username = viewModel.username();
+        var privateMessage = message.newMessage();
+
+        var openItem = ko.utils.arrayFirst(viewModel.privateMessages(), function (item) {
+            if (message.fromUserConnectionId == item.fromUserConnectionId)
+                return true;
+            return false;
+        });
+
+        openItem.messages.push(privateMessage);
+
+        viewModel.hub.server.sendMessage(username, privateMessage, message.connectionId);
+
+        return false;
+    },
+
+    openChatWindow: function () {
+        var message = this;
+        var openItem = ko.utils.arrayFirst(viewModel.privateMessages(), function (item) {
+            if (message.Item1 == item.connectionId)
+                return true;
+            return false;
+        });
+
+        if (openItem)
+            return;
+
+        viewModel.privateMessages.push(
+                { connectionId: message.Item1, username: message.Item2, newMessage: ko.observable(""), messages: ko.observableArray([])});
+    },
+
+    closeChatWindow: function () {
+        var message = this;
+        viewModel.privateMessages.remove(message);
     },
 
     selectUsername: function () {
@@ -29,13 +83,17 @@
 
     connect: function () {
         viewModel.isLoading(true);
-        var messagesHub = $.connection.messages;
-        messagesHub.client.receiveMessage = function (message) {
-            viewModel.addMessage(message);
+        viewModel.hub = $.connection.messages;
+        viewModel.hub.client.receivePublicMessage = function (message) {
+            viewModel.addPublicMessage(message);
         };
-        messagesHub.client.updateUsers = function (list) {
+        viewModel.hub.client.receivePrivateMessage = function (message) {
+            viewModel.addPrivateMessage(message);
+        };
+        viewModel.hub.client.updateUsers = function (list) {
             viewModel.users(list);
         };
+
         $.connection.hub.qs = "name=" + viewModel.username();
         $.connection.hub.start().done(function () {
             viewModel.isLoading(false);

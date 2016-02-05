@@ -18,19 +18,5 @@ namespace Chat.Controllers.Api
         {
             _hub = connectionManager.GetHubContext<MessagesHub>();
         }
-
-        [HttpPost]
-        public Message SendMessage(string username, string text, string toUser = null)
-        {
-            var message = new Message
-            {
-                FromUser = username,
-                Text = text
-            };
-
-            _hub.Clients.All.receiveMessage(message);
-
-            return message;
-        }
     }
 }
