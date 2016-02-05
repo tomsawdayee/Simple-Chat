@@ -31,6 +31,9 @@
     sendMessage: function () {
         var message = viewModel.message();
         var username = viewModel.username();
+
+        if (message == null)
+            return;
         
         viewModel.hub.server.sendMessage(username, message, null);
 
@@ -44,8 +47,10 @@
         var username = viewModel.username();
         var privateMessage = message.newMessage();
 
+        if (privateMessage == null)
+            return;
         var openItem = ko.utils.arrayFirst(viewModel.privateMessages(), function (item) {
-            if (message.fromUserConnectionId == item.fromUserConnectionId)
+            if (message.connectionId() == item.connectionId())
                 return true;
             return false;
         });
@@ -105,12 +110,6 @@
         });
     }
 };
-
-
-
-
-
-
 
 
 function PrivateChat(connectionId, username, message)

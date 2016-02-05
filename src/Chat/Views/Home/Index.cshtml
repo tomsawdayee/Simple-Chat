@@ -5,8 +5,7 @@
 
 <div id="chat-hub">
     <h3 class="text-center">
-        Welcome
-        <span data-bind="visible: !isConnected()">! Please connect</span>
+        Welcome<span data-bind="visible: !isConnected()">! Please connect</span>
         <span data-bind="visible: isConnected(), text: username()"> </span>
     </h3>
     <div class="row margin-top-10" data-bind="visible: !isConnected()">
@@ -21,9 +20,8 @@
     </div>
 
     <div class="row " style="padding-top:40px;">
-
         <br /><br />
-        <div class="col-md-8">
+        <div class="col-md-8 col-xs-6">
             <div class="panel panel-info">
 
                 <div class="panel-heading">
@@ -63,7 +61,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 col-xs-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     ONLINE USERS
@@ -131,9 +129,9 @@
                 <div class="panel-footer">
                     <div class="input-group">
                         <form data-bind="submit: $parent.sendPrivateMessage">
-                            <input id="btn-input" type="text" data-bind="value: newMessage" class="form-control input-sm chat_input" placeholder="Write your message here..." />
+                            <input id="btn-input" type="text" data-bind="value: newMessage" class="form-control input-sm chat_input chat-pvt-message-input" placeholder="Write your message here..." />
                             <span class="input-group-btn">
-                                <button type="submit" class="btn btn-primary btn-sm" id="btn-chat">Send</button>
+                                <button type="submit" class="btn btn-info btn-sm" id="btn-chat">Send</button>
                             </span>
                         </form>
                     </div>
