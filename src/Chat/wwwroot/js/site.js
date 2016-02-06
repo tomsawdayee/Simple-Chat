@@ -73,7 +73,7 @@
         });
         if (openItem)
             return;
-        viewModel.privateMessages.push(new PrivateChat(message.connectionId, message.sername, null));
+        viewModel.privateMessages.push(new PrivateChat(message.connectionId, message.username, null));
     },
 
     closeChatWindow: function () {
