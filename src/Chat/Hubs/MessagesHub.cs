@@ -10,9 +10,7 @@ namespace Chat.Hubs
     [HubName("messages")]
     public class MessagesHub : Hub
     {
-        private readonly static List<Tuple<string, string>> _chatConnections = 
-            new List<Tuple<string, string>>();
-
+        private readonly static List<User> _chatConnections = new List<User>();
 
         public void SendMessage(string username, string text, string toUser = null)
         {
@@ -25,24 +23,23 @@ namespace Chat.Hubs
             if (string.IsNullOrEmpty(toUser))
                 Clients.All.receivePublicMessage(message);
             else
-            { 
                 Clients.Client(toUser).receivePrivateMessage(message);
-            }
         }
 
         public override Task OnDisconnected(bool stopCalled)
         {
-            _chatConnections.RemoveAll(x => x.Item1 == Context.ConnectionId);
-            Clients.All.updateUsers(_chatConnections);
+            _chatConnections.RemoveAll(x => x.ConnectionId == Context.ConnectionId);
+            Clients.All.userDisconnected(Context.ConnectionId);
             return base.OnDisconnected(stopCalled);
         }
         public override Task OnConnected()
         {
             var name = Context.QueryString["name"].ToString();
-                _chatConnections.Add(Tuple.Create(Context.ConnectionId, name));
+                _chatConnections.Add(new User { ConnectionId = Context.ConnectionId, Username = name });
 
-            Clients.All.updateUsers(_chatConnections);
+            Clients.Client(Context.ConnectionId).refreshList(_chatConnections);
 
+            Clients.AllExcept(Context.ConnectionId).userConnected(Context.ConnectionId, name);
             return base.OnConnected();
         }
     }

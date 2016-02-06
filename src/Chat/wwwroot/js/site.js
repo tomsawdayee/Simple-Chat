@@ -22,7 +22,7 @@
 
         if (!openItem) {
             viewModel.privateMessages.push(new PrivateChat(message.FromUserConnectionId, message.FromUser, privateMessageObject));
-              
+
         } else {
             openItem.messages.push(privateMessageObject);
         }
@@ -34,14 +34,14 @@
 
         if (message == null)
             return;
-        
+
         viewModel.hub.server.sendMessage(username, message, null);
 
         viewModel.message(null);
         return false;
     },
 
-    sendPrivateMessage: function(){
+    sendPrivateMessage: function () {
         var message = this;
 
         var username = viewModel.username();
@@ -58,26 +58,22 @@
         var privateMessageObject = new PrivateMessage(username, privateMessage, true);
 
         openItem.messages.push(privateMessageObject);
-
         viewModel.hub.server.sendMessage(username, privateMessage, message.connectionId());
 
         message.newMessage(null);
-
         return false;
     },
 
     openChatWindow: function () {
         var message = this;
         var openItem = ko.utils.arrayFirst(viewModel.privateMessages(), function (item) {
-            if (message.Item1 == item.connectionId())
+            if (message.connectionId == item.connectionId())
                 return true;
             return false;
         });
-
         if (openItem)
             return;
-
-        viewModel.privateMessages.push(new PrivateChat(message.Item1, message.Item2, null));
+        viewModel.privateMessages.push(new PrivateChat(message.connectionId, message.sername, null));
     },
 
     closeChatWindow: function () {
@@ -99,8 +95,30 @@
         viewModel.hub.client.receivePrivateMessage = function (message) {
             viewModel.addPrivateMessage(message);
         };
-        viewModel.hub.client.updateUsers = function (list) {
-            viewModel.users(list);
+        viewModel.hub.client.userConnected = function (connectionId, username) {
+            var user = new User(connectionId, username);
+            viewModel.users.push(user);
+            viewModel.messages.push({ Text: username + " has joined the room", FromUser: "" });
+        };
+
+        viewModel.hub.client.userDisconnected = function (connectionId) {
+            var username;
+            viewModel.users.remove(function (item) {
+                if (item.connectionId == connectionId)
+                {
+                    username = item.username;
+                    return true;
+                }
+                return false;
+            });
+            viewModel.messages.push({ Text: username + " has left the room", FromUser: "" });
+        };
+
+        viewModel.hub.client.refreshList = function (list) {
+            var mappedData = ko.utils.arrayMap(list, function (item) {
+                return new User(item.ConnectionId, item.Username);
+            });
+            viewModel.users(mappedData);
         };
 
         $.connection.hub.qs = "name=" + viewModel.username();
@@ -111,9 +129,7 @@
     }
 };
 
-
-function PrivateChat(connectionId, username, message)
-{
+function PrivateChat(connectionId, username, message) {
     var self = this;
     self.connectionId = ko.observable(connectionId);
     self.username = ko.observable(username);
@@ -126,14 +142,19 @@ function PrivateChat(connectionId, username, message)
         self.messages = ko.observableArray([new PrivateMessage(message.from, message.text)]);
 }
 
-function PrivateMessage(from, text, isSelf)
-{
+function PrivateMessage(from, text, isSelf) {
     var self = this;
     self.from = ko.observable(from);
     self.text = ko.observable(text);
     self.isSelf = ko.observable(isSelf);
 }
-    
+
+function User(connectionId, username) {
+    var self = this;
+    self.connectionId = connectionId;
+    self.username = username;
+}
+
 ko.applyBindings(viewModel, $("#chat-hub")[0]);
 
 
