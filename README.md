@@ -1,4 +1,4 @@
-# Tom's Chat
+# Simple Chat
 
 A Simple chat application
 
